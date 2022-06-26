@@ -1,3 +1,4 @@
+require "pry"
 class ApplicationController < Sinatra::Base
   set :default_content_type, 'application/json'
 
@@ -15,5 +16,42 @@ class ApplicationController < Sinatra::Base
       } }
     })
   end
+
+  get "/reviews/:id" do
+    review = Review.find(params[:id])
+    review.to_json
+  end
+ 
+  delete "/reviews/:id" do
+    # find review
+    review = Review.find(params[:id])
+    # delete from DB
+    review.destroy
+    # send response
+    review.to_json
+  end
+
+  post "/reviews" do
+    review = Review.create(
+      score: params[:score],
+      comment: params[:comment],
+      game_id: params[:game_id],
+      user_id: params[:user_id]
+    )
+    review.to_json
+  end
+
+  patch "/reviews/:id" do
+    # find review to update
+    review = Review.find(params[:id])
+    # update review using data in bodyof request
+    review.update(
+      comment: params[:comment],
+      score: params[:score]
+    )
+    # return updated review
+    review.to_json
+  end
+
 
 end
